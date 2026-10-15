@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Application Tracker</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ccc; }
+  </style>
 </head>
 <body>
-    <div>
-        <h1>Heading</h1>
-    </div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <h1>Job Application Tracker</h1>
+  <table>
+    <thead><tr><th>Company</th><th>Role</th><th>Status</th></tr></thead>
+    <tbody id="rows"><tr><td colspan="3">Loading...</td></tr></tbody>
+  </table>
+
+  <script>
+    const API_URL = "https://gg3znispztqxwpcj5bim44o3yu0pkdem.lambda-url.eu-north-1.on.aws/";
+
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(apps => {
+        document.getElementById("rows").innerHTML = apps
+          .map(a => `<tr><td>${a.company}</td><td>${a.role}</td><td>${a.status}</td></tr>`)
+          .join("");
+      })
+      .catch(() => {
+        document.getElementById("rows").innerHTML =
+          '<tr><td colspan="3">Could not load data.</td></tr>';
+      });
+  </script>
 </body>
 </html>
