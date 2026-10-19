@@ -12,4 +12,4 @@ WTC-HUXMZ39P
 ## Progress
 
 
-WTC-HF97RYDZ
+WTC-HF97RYDZ- [x] Day 3: Read from DynamoDB
