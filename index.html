@@ -6,12 +6,27 @@
   <title>Job Application Tracker</title>
   <style>
     body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
-    table { width: 100%; border-collapse: collapse; }
+    form { display: flex; gap: 8px; flex-wrap: wrap; }
+    input, select, button { padding: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ccc; }
   </style>
 </head>
 <body>
   <h1>Job Application Tracker</h1>
+
+  <form id="form">
+    <input id="company" placeholder="Company" required>
+    <input id="role" placeholder="Role" required>
+    <select id="status">
+      <option>Applied</option>
+      <option>Interview</option>
+      <option>Offer</option>
+      <option>Rejected</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+
   <table>
     <thead><tr><th>Company</th><th>Role</th><th>Status</th></tr></thead>
     <tbody id="rows"><tr><td colspan="3">Loading...</td></tr></tbody>
@@ -19,18 +34,48 @@
 
   <script>
     const API_URL = "https://gg3znispztqxwpcj5bim44o3yu0pkdem.lambda-url.eu-north-1.on.aws/";
+    const rows = document.getElementById("rows");
 
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(apps => {
-        document.getElementById("rows").innerHTML = apps
-          .map(a => `<tr><td>${a.company}</td><td>${a.role}</td><td>${a.status}</td></tr>`)
+    function esc(text) {
+      const d = document.createElement("div");
+      d.textContent = text;
+      return d.innerHTML;
+    }
+
+    async function load() {
+      try {
+        const res = await fetch(API_URL);
+        const apps = await res.json();
+        rows.innerHTML = apps
+          .map(a => `<tr><td>${esc(a.company)}</td><td>${esc(a.role)}</td><td>${esc(a.status)}</td></tr>`)
           .join("");
-      })
-      .catch(() => {
-        document.getElementById("rows").innerHTML =
-          '<tr><td colspan="3">Could not load data.</td></tr>';
+      } catch {
+        rows.innerHTML = '<tr><td colspan="3">Could not load data.</td></tr>';
+      }
+    }
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const body = {
+        company: document.getElementById("company").value,
+        role: document.getElementById("role").value,
+        status: document.getElementById("status").value,
+      };
+      // text/plain avoids a CORS preflight, so no extra AWS setting is needed
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(body),
       });
+      if (res.ok) {
+        e.target.reset();
+        load();
+      } else {
+        alert("Could not add application.");
+      }
+    });
+
+    load();
   </script>
 </body>
 </html>

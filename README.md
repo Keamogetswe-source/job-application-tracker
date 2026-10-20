@@ -13,3 +13,4 @@ WTC-HUXMZ39P
 
 
 WTC-HF97RYDZ- [x] Day 3: Read from DynamoDB
+- [x] Day 4: Add create endpoint
