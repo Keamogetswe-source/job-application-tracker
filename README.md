@@ -6,7 +6,7 @@ A small serverless app on AWS for tracking job applications. Built over 5 days a
 
 **Live demo:** https://keamogetswe-source.github.io/job-application-tracker/
 
-**Demo video:** coming soon
+**Demo video:** https://youtu.be/7oujOIY2bZM
 
 ## Screenshots
 
